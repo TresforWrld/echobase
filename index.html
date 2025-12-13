@@ -1,175 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>𝘌𝘊𝘏𝘖𝘉𝘈𝘚𝘌</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>ECHOBASE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #0d0d14;
-      color: white;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #0d0d14;
+    color: white;
+  }
 
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: #12121c;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #12121c;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-    /* App name on left */
-    .appName {
-      font-size: 20px;
-      font-weight: bold;
-      color: white;
-    }
+  .appName {
+    font-size: 22px;
+    font-weight: bold;
+  }
 
-    /* Dashboard (PFP) on right */
-    .dashboard {
-      position: relative;
-      cursor: pointer;
-    }
+  .userArea {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    cursor: pointer;
+  }
 
-    #userPFP {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
+  #userPFP {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
 
-    /* Dashboard menu */
-    #dashboardMenu {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 50px;
-      background: #1a1a2a;
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      z-index: 200;
-      width: 150px;
-    }
+  #usernameDisplay {
+    font-weight: bold;
+    color: #8f8fff;
+  }
 
-    #dashboardMenu button {
-      display: block;
-      width: 100%;
-      margin-bottom: 6px;
-      padding: 8px;
-      background: #6a5cff;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-    }
+  #dashboardMenu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50px;
+    background: #1a1a2a;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    z-index: 200;
+    width: 150px;
+  }
 
-    /* Container & Posts */
-    .container {
-      padding: 16px;
-      padding-bottom: 80px; /* space for footer */
-    }
+  #dashboardMenu button {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 8px;
+    background: #6a5cff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-    textarea {
-      width: 100%;
-      height: 80px;
-      background: #1a1a2a;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px;
-      resize: none;
-    }
+  /* Container */
+  .container {
+    padding: 16px;
+    padding-bottom: 80px;
+  }
 
-    button.postBtn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      background: #6a5cff;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-size: 16px;
-    }
+  textarea {
+    width: 100%;
+    height: 80px;
+    background: #1a1a2a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    resize: none;
+  }
 
-    .post {
-      background: #151525;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-    }
+  button.postBtn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: #6a5cff;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+  }
 
-    .user {
-      font-weight: bold;
-      color: #8f8fff;
-    }
+  .post {
+    background: #151525;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+  }
 
-    /* Profile modal */
-    #profileModal {
-      display: none;
-      position: fixed;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a2a;
-      border-radius: 8px;
-      padding: 16px;
-      z-index: 200;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-    #profileModal img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      display: block;
-      margin-bottom: 8px;
-    }
-    #profileModal button {
-      margin-top: 10px;
-      width: 100%;
-      padding: 8px;
-      background: #6a5cff;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-    }
+  .user {
+    font-weight: bold;
+    color: #8f8fff;
+  }
 
-    /* Footer */
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #12121c;
-      color: #888;
-      text-align: center;
-      padding: 12px 16px;
-      font-size: 12px;
-    }
-    footer a {
-      color: #6a5cff;
-      text-decoration: none;
-      margin: 0 5px;
-    }
-  </style>
+  /* Profile Modal */
+  #profileModal {
+    display: none;
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a2a;
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 200;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  }
+  #profileModal img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    margin-bottom: 8px;
+  }
+  #profileModal button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    background: #6a5cff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* Footer */
+  footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #12121c;
+    color: #888;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+  footer a {
+    color: #6a5cff;
+    text-decoration: none;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+
+  /* Developer & Terms Modal */
+  .modal {
+    display:none; 
+    position:fixed; 
+    top:50px; 
+    left:50%; 
+    transform:translateX(-50%);
+    background:#1a1a2a; 
+    border-radius:8px; 
+    padding:16px; 
+    z-index:200; 
+    width:90%; 
+    max-width:400px; 
+    box-shadow:0 0 15px rgba(0,0,0,0.5); 
+    color:white; 
+    font-family:system-ui, sans-serif;
+  }
+  .modal h2 {
+    text-align:center;
+    font-family:system-ui, sans-serif;
+  }
+  .modal button {
+    margin-top:10px; 
+    width:100%; 
+    padding:8px; 
+    background:#6a5cff; 
+    border:none; 
+    border-radius:6px; 
+    color:white; 
+    cursor:pointer;
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <!-- Left: App Name -->
   <div class="appName">ECHOBASE</div>
-
-  <!-- Right: User Dashboard -->
-  <div class="dashboard" id="dashboardBtn">
+  <div class="userArea" id="dashboardBtn">
     <img id="userPFP" src="" alt="PFP">
+    <div id="usernameDisplay"></div>
     <div id="dashboardMenu">
       <button onclick="viewProfile()">View Profile</button>
       <button onclick="changePFP()">Change Profile Photo</button>
@@ -185,57 +220,40 @@
   <button onclick="closeProfile()">Close</button>
 </div>
 
+<!-- Developer Info Modal -->
+<div id="developerModal" class="modal">
+  <h2>ECHOBASE</h2>
+  <h3>Developer Info</h3>
+  <p><strong>Name:</strong> Tresfor Zulu</p>
+  <p><strong>Brands:</strong> ANICADE, Tru3Echo Nation, ECHOBASE</p>
+  <p><strong>What I do:</strong> Web & App Development, Creative Projects, Content Creation</p>
+  <p><strong>Project Info:</strong> ECHOBASE is a social web for sharing posts, building community, and more.</p>
+  <button onclick="closeDeveloperInfo()">Close</button>
+</div>
+
+<!-- Terms Modal -->
+<div id="termsModal" class="modal">
+  <h2>ECHOBASE</h2>
+  <h3>Terms of Use</h3>
+  <p>By using ECHOBASE, you agree to follow the community rules and respect other users. Posts are stored locally or via Firebase. The developer is not responsible for content shared by users. Use at your own risk.</p>
+  <button onclick="closeTerms()">Close</button>
+</div>
+
 <div class="container">
   <textarea id="echoInput" placeholder="What’s your echo?"></textarea>
   <button class="postBtn" onclick="postEcho()">Echo</button>
   <div id="feed"></div>
 </div>
 
-<!-- Footer -->
 <footer>
   <div style="margin-bottom:6px;">©2025 ANICADE ⛩️ productions (ANICADE ELEVATE)</div>
   <div>
-    <a href="#" onclick="openDeveloperInfo()">Developer Info</a> |
+    <a onclick="openDeveloperInfo()">Developer Info</a> |
     <a href="mailto:tresforzulu@gmail.com">Contact</a> |
-    <a href="#" onclick="openTerms()">Terms of Use</a>
+    <a onclick="openTerms()">Terms of Use</a>
   </div>
 </footer>
 
-<!-- Developer Info Modal -->
-<div id="developerModal" style="display:none; position:fixed; top:50px; left:50%; transform:translateX(-50%); 
-     background:#1a1a2a; border-radius:8px; padding:16px; z-index:200; width:90%; max-width:400px; 
-     box-shadow:0 0 15px rgba(0,0,0,0.5); color:white;">
-  <h3>Developer Info</h3>
-  <p><strong>Name:</strong> Tresfor Zulu</p>
-  <p><strong>Brands:</strong> ANICADE, Tru3Echo Nation, ECHOBASE</p>
-  <p><strong>What I do:</strong> Web & App Development, Creative Projects, Content Creation</p>
-  <p><strong>Project Info:</strong> ECHOBASE is a social web for sharing posts, building community, and more.</p>
-  <button onclick="closeDeveloperInfo()" style="margin-top:10px; width:100%; padding:8px; background:#6a5cff; border:none; border-radius:6px; color:white; cursor:pointer;">Close</button>
-</div>
-
-<!-- Terms Modal -->
-<div id="termsModal" style="display:none; position:fixed; top:50px; left:50%; transform:translateX(-50%); 
-     background:#1a1a2a; border-radius:8px; padding:16px; z-index:200; width:90%; max-width:400px; 
-     box-shadow:0 0 15px rgba(0,0,0,0.5); color:white;">
-  <h3>Terms of Use</h3>
-  <p>By using ECHOBASE, you agree to follow the community rules and respect other users. Posts are stored locally or via Firebase. The developer is not responsible for content shared by users. Use at your own risk.</p>
-  <button onclick="closeTerms()" style="margin-top:10px; width:100%; padding:8px; background:#6a5cff; border:none; border-radius:6px; color:white; cursor:pointer;">Close</button>
-</div>
-
-<script>
-  function openDeveloperInfo(){
-    document.getElementById("developerModal").style.display = "block";
-  }
-  function closeDeveloperInfo(){
-    document.getElementById("developerModal").style.display = "none";
-  }
-
-  function openTerms(){
-    document.getElementById("termsModal").style.display = "block";
-  }
-  function closeTerms(){
-    document.getElementById("termsModal").style.display = "none";
-  }
 <script>
   // Load username and PFP
   let username = localStorage.getItem("echobase_username");
@@ -247,6 +265,7 @@
   }
 
   const userPFPImg = document.getElementById("userPFP");
+  const usernameDisplay = document.getElementById("usernameDisplay");
   const modalPFP = document.getElementById("modalPFP");
   const modalUsername = document.getElementById("modalUsername");
   const dashboardMenu = document.getElementById("dashboardMenu");
@@ -264,24 +283,49 @@
     updatePFP("https://via.placeholder.com/40");
   }
 
+  usernameDisplay.innerText = username;
+
   // Dashboard toggle
-dashboardBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent window click from closing
+  const dashboardBtn = document.getElementById("dashboardBtn");
+  dashboardBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
     dashboardMenu.style.display = dashboardMenu.style.display === "block" ? "none" : "block";
-});
+  });
 
-// Close dashboard when clicking outside
-window.addEventListener("click", (e) => {
+  window.addEventListener("click", (e) => {
     if(!dashboardBtn.contains(e.target)){
-        dashboardMenu.style.display = "none";
+      dashboardMenu.style.display = "none";
     }
-});
+  });
 
-// Prevent dashboard menu clicks from closing itself
-dashboardMenu.addEventListener("click", (e) => e.stopPropagation());
+  dashboardMenu.addEventListener("click", (e)=> e.stopPropagation());
 
-// Echo button works normally
-function postEcho(){
+  function closeDashboard(){ dashboardMenu.style.display = "none"; }
+  function viewProfile(){
+    modalUsername.innerText = username;
+    document.getElementById("profileModal").style.display = "block";
+    closeDashboard();
+  }
+  function closeProfile(){ document.getElementById("profileModal").style.display = "none"; }
+
+  function changePFP(){
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=>updatePFP(reader.result);
+      reader.readAsDataURL(file);
+    }
+    closeDashboard();
+  }
+
+  // Feed
+  let feed = JSON.parse(localStorage.getItem("echobase_feed")) || [];
+  function postEcho(){
     const text = document.getElementById("echoInput").value.trim();
     if(!text) return;
     const post = { user: username, content: text };
@@ -289,8 +333,34 @@ function postEcho(){
     localStorage.setItem("echobase_feed", JSON.stringify(feed));
     document.getElementById("echoInput").value = "";
     renderFeed();
-}
-</script>
+  }
 
+  function renderFeed(){
+    const feedDiv = document.getElementById("feed");
+    feedDiv.innerHTML = "";
+    feed.forEach(p=>{
+      const div=document.createElement("div");
+      div.className="post";
+      let postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
+      div.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          <img src="${postPFP}" alt="PFP" style="width:30px;height:30px;border-radius:50%;">
+          <div class="user">${p.user}</div>
+        </div>
+        <div>${p.content}</div>
+      `;
+      feedDiv.appendChild(div);
+    });
+  }
+
+  renderFeed();
+
+  // Developer & Terms
+  function openDeveloperInfo(){ document.getElementById("developerModal").style.display="block"; }
+  function closeDeveloperInfo(){ document.getElementById("developerModal").style.display="none"; }
+  function openTerms(){ document.getElementById("termsModal").style.display="block"; }
+  function closeTerms(){ document.getElementById("termsModal").style.display="none"; }
+
+</script>
 </body>
 </html>
