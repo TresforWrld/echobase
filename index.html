@@ -12,7 +12,7 @@
     background-color: #0d0d14;
     color: white;
 
-    /* Hexagonal pattern background (subtle, tech-style) */
+    /* Hexagonal pattern background */
     background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9Ijg4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXR0ZXJuIGlkPSJoZXgiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBvbHlnb24gcG9pbnRzPSIyMCwwIDQwLDEwIDQwLDI1IDIwLDM1IDAsMjUgMCwxMCIgc3Ryb2tlPSIjMjI0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEuNSIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2hleCkiLz48L3N2Zz4=');
     background-repeat: repeat;
     background-size: 60px 52px;
@@ -41,18 +41,19 @@
     align-items: center;
     gap: 10px;
     position: relative;
-    cursor: pointer;
   }
 
   #userPFP {
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    cursor: pointer;
   }
 
   #usernameDisplay {
     font-weight: bold;
     color: #8f8fff;
+    cursor: pointer;
   }
 
   #dashboardMenu {
@@ -90,7 +91,7 @@
   textarea {
     width: 99%;
     height: 80px;
-    background: rgba(26,26,42,0.85); /* transparent to show pattern */
+    background: rgba(26,26,42,0.85);
     color: white;
     border: none;
     border-radius: 8px;
@@ -110,7 +111,7 @@
   }
 
   .post {
-    background: rgba(21,21,37,0.85); /* transparency */
+    background: rgba(21,21,37,0.85);
     padding: 12px;
     border-radius: 8px;
     margin-top: 12px;
@@ -190,7 +191,6 @@
   }
   .modal h2 {
     text-align:center;
-    font-family:system-ui, sans-serif;
   }
   .modal button {
     margin-top:10px; 
@@ -208,7 +208,7 @@
 
 <header>
   <div class="appName">ECHOBASE</div>
-  <div class="userArea" id="dashboardBtn">
+  <div class="userArea">
     <img id="userPFP" src="" alt="PFP">
     <div id="usernameDisplay"></div>
     <div id="dashboardMenu">
@@ -233,7 +233,7 @@
   <p><strong>Name:</strong> Tresfor Wrld</p>
   <p><strong>Brands:</strong> ANICADE, Tru3Echo, ECHOBASE, SkillRise Africa</p>
   <p><strong>What I do:</strong> Web & App Development, Creative Projects, Content Creation</p>
-  <p><strong>Project Info:</strong> ECHOBASE is a social web, a part of ANICADE`s ELEVATE programe. it's mainly for sharing posts, building community, connecting with creators, and staying engaged.</p>
+  <p><strong>Project Info:</strong> ECHOBASE is a social web, part of ANICADE's ELEVATE program, mainly for sharing posts, building community, connecting with creators, and staying engaged.</p>
   <button onclick="closeDeveloperInfo()">Close</button>
 </div>
 
@@ -262,13 +262,8 @@
 
 <script>
   // Load username and PFP
-  let username = localStorage.getItem("echobase_username");
-  let pfp = localStorage.getItem("echobase_pfp");
-
-  if(!username){
-    username = prompt("Choose a username for ECHOBASE:") || "Guest";
-    localStorage.setItem("echobase_username", username);
-  }
+  let username = localStorage.getItem("echobase_username") || prompt("Choose a username for ECHOBASE:") || "Guest";
+  localStorage.setItem("echobase_username", username);
 
   const userPFPImg = document.getElementById("userPFP");
   const usernameDisplay = document.getElementById("usernameDisplay");
@@ -283,49 +278,37 @@
     renderFeed();
   }
 
-  if(pfp){
-    updatePFP(pfp);
-  } else {
-    updatePFP("https://via.placeholder.com/40");
-  }
-
+  const pfp = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
+  updatePFP(pfp);
   usernameDisplay.innerText = username;
 
-  // Dashboard toggle
-  const dashboardBtn = document.getElementById("dashboardBtn");
-  dashboardBtn.addEventListener("click", (e) => {
+  // Click PFP to open profile
+  userPFPImg.addEventListener("click", e => { e.stopPropagation(); viewProfile(); });
+
+  // Click username to toggle dashboard menu
+  usernameDisplay.addEventListener("click", e => {
     e.stopPropagation();
     dashboardMenu.style.display = dashboardMenu.style.display === "block" ? "none" : "block";
   });
 
-  window.addEventListener("click", (e) => {
-    if(!dashboardBtn.contains(e.target)){
-      dashboardMenu.style.display = "none";
-    }
-  });
-
-  dashboardMenu.addEventListener("click", (e)=> e.stopPropagation());
+  // Close dashboard if clicked outside
+  window.addEventListener("click", () => dashboardMenu.style.display = "none");
+  dashboardMenu.addEventListener("click", e => e.stopPropagation());
 
   function closeDashboard(){ dashboardMenu.style.display = "none"; }
-  function viewProfile(){
-    modalUsername.innerText = username;
-    document.getElementById("profileModal").style.display = "block";
-    closeDashboard();
-  }
-  function closeProfile(){ document.getElementById("profileModal").style.display = "none"; }
+  function viewProfile(){ modalUsername.innerText = username; document.getElementById("profileModal").style.display="block"; closeDashboard(); }
+  function closeProfile(){ document.getElementById("profileModal").style.display="none"; }
 
   function changePFP(){
     const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
+    fileInput.type="file"; fileInput.accept="image/*"; fileInput.click();
     fileInput.onchange = () => {
       const file = fileInput.files[0];
       if(!file) return;
       const reader = new FileReader();
       reader.onload = ()=>updatePFP(reader.result);
       reader.readAsDataURL(file);
-    }
+    };
     closeDashboard();
   }
 
@@ -334,20 +317,19 @@
   function postEcho(){
     const text = document.getElementById("echoInput").value.trim();
     if(!text) return;
-    const post = { user: username, content: text };
-    feed.unshift(post);
+    feed.unshift({ user: username, content: text });
     localStorage.setItem("echobase_feed", JSON.stringify(feed));
-    document.getElementById("echoInput").value = "";
+    document.getElementById("echoInput").value="";
     renderFeed();
   }
 
   function renderFeed(){
     const feedDiv = document.getElementById("feed");
-    feedDiv.innerHTML = "";
-    feed.forEach(p=>{
+    feedDiv.innerHTML="";
+    feed.forEach(p => {
       const div=document.createElement("div");
       div.className="post";
-      let postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
+      const postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
       div.innerHTML = `
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
           <img src="${postPFP}" alt="PFP" style="width:30px;height:30px;border-radius:50%;">
@@ -361,11 +343,12 @@
 
   renderFeed();
 
-  // Developer & Terms
+  // Developer & Terms modals
   function openDeveloperInfo(){ document.getElementById("developerModal").style.display="block"; }
   function closeDeveloperInfo(){ document.getElementById("developerModal").style.display="none"; }
   function openTerms(){ document.getElementById("termsModal").style.display="block"; }
   function closeTerms(){ document.getElementById("termsModal").style.display="none"; }
+
 </script>
 </body>
 </html>
