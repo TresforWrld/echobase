@@ -13,7 +13,6 @@ body {
   background-color: #0d0d14;
   color: white;
 
-  /* Hex background */
   background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9Ijg4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXR0ZXJuIGlkPSJoZXgiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBvbHlnb24gcG9pbnRzPSIyMCwwIDQwLDEwIDQwLDI1IDIwLDM1IDAsMjUgMCwxMCIgc3Ryb2tlPSIjMjIyMjQ0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEuMiIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2hleCkiLz48L3N2Zz4=');
   background-repeat: repeat;
   background-size: 70px 60px;
@@ -46,7 +45,7 @@ header button {
   cursor: pointer;
 }
 
-/* ===== CHAT AREA ===== */
+/* ===== CHAT ===== */
 #chatBox {
   padding: 12px;
   padding-bottom: 120px;
@@ -70,11 +69,11 @@ header button {
 
 .user {
   font-size: 11px;
-  opacity: 0.8;
+  opacity: 0.85;
   margin-bottom: 4px;
 }
 
-/* ===== INPUT BAR ===== */
+/* ===== INPUT ===== */
 #inputBar {
   position: fixed;
   bottom: 0;
@@ -143,8 +142,7 @@ if (!username) {
   localStorage.setItem("echobase_username", username);
 }
 
-/* ===== FIREBASE CONFIG ===== */
-/* 🔥 REPLACE WITH YOUR OWN FIREBASE DETAILS */
+/* ===== FIREBASE ===== */
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -176,21 +174,40 @@ function sendMessage() {
   input.value = "";
 }
 
+/* ENTER KEY SEND */
+document.getElementById("messageInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") sendMessage();
+});
+
+/* RECEIVE */
 chatRef.limitToLast(100).on("child_added", snap => {
   const msg = snap.val();
-
   const div = document.createElement("div");
   div.className = "message" + (msg.user === username ? " me" : "");
-  div.innerHTML = `
-    <div class="user">${msg.user}</div>
-    <div>${msg.text}</div>
-  `;
+
+  const statusSpan = document.createElement("span");
+  statusSpan.style.marginLeft = "6px";
+  statusSpan.style.fontSize = "10px";
+  statusSpan.style.opacity = "0.7";
+
+  db.ref("presence/" + msg.user).on("value", s => {
+    if (!s.exists()) return;
+    statusSpan.textContent = s.val().online ? "🟢" : "⚪";
+  });
+
+  const userDiv = document.createElement("div");
+  userDiv.className = "user";
+  userDiv.textContent = msg.user;
+  userDiv.appendChild(statusSpan);
+
+  div.appendChild(userDiv);
+  div.innerHTML += `<div>${msg.text}</div>`;
 
   chatBox.appendChild(div);
   window.scrollTo(0, document.body.scrollHeight);
 });
 
-/* ===== ONLINE STATUS ===== */
+/* ===== PRESENCE ===== */
 const statusText = document.getElementById("statusText");
 const presenceRef = db.ref("presence/" + username);
 const connectedRef = db.ref(".info/connected");
@@ -206,18 +223,9 @@ connectedRef.on("value", snap => {
       online: true,
       lastSeen: Date.now()
     });
-  }
-});
 
-presenceRef.on("value", snap => {
-  if (!snap.exists()) return;
-
-  if (snap.val().online) {
-    statusText.innerHTML = "🟢 Online";
+    statusText.textContent = "🟢 Online";
     statusText.style.color = "#4cff6a";
-  } else {
-    statusText.innerHTML = "⚪ Offline";
-    statusText.style.color = "#aaa";
   }
 });
 
