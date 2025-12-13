@@ -21,6 +21,20 @@
       text-align: center;
     }
 
+    header div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #userPFP {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
     .container {
       padding: 16px;
     }
@@ -56,7 +70,6 @@
 
     .user {
       font-weight: bold;
-      margin-bottom: 6px;
       color: #8f8fff;
     }
   </style>
@@ -64,7 +77,15 @@
 
 <body>
 
-<header>ECHOBASE</header>
+<header>
+  <div>
+    <img id="userPFP" src="" alt="PFP">
+    <div>
+      <div>ECHOBASE</div>
+      <div id="usernameDisplay" style="font-size:12px; opacity:0.7;"></div>
+    </div>
+  </div>
+</header>
 
 <div class="container">
   <textarea id="echoInput" placeholder="What’s your echo?"></textarea>
@@ -74,6 +95,46 @@
 </div>
 
 <script>
+  // Load username and profile photo
+  let username = localStorage.getItem("echobase_username");
+  let pfp = localStorage.getItem("echobase_pfp");
+
+  if (!username) {
+    username = prompt("Choose a username for ECHOBASE:") || "Guest";
+    localStorage.setItem("echobase_username", username);
+  }
+
+  document.getElementById("usernameDisplay").innerText = "@" + username;
+
+  const userPFPImg = document.getElementById("userPFP");
+  if (pfp) {
+    userPFPImg.src = pfp;
+  } else {
+    userPFPImg.src = "https://via.placeholder.com/40"; // default avatar
+  }
+
+  // Click to change PFP
+  userPFPImg.addEventListener("click", () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        localStorage.setItem("echobase_pfp", reader.result);
+        userPFPImg.src = reader.result;
+        renderFeed(); // update PFP on posts
+      };
+      reader.readAsDataURL(file);
+    };
+  });
+
+  // Load feed
   let feed = JSON.parse(localStorage.getItem("echobase_feed")) || [];
 
   function postEcho() {
@@ -81,7 +142,7 @@
     if (!text) return;
 
     const post = {
-      user: "Guest",
+      user: username,
       content: text
     };
 
@@ -98,7 +159,16 @@
     feed.forEach(p => {
       const div = document.createElement("div");
       div.className = "post";
-      div.innerHTML = `<div class="user">${p.user}</div>${p.content}`;
+
+      let postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
+
+      div.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          <img src="${postPFP}" alt="PFP" style="width:30px; height:30px; border-radius:50%;">
+          <div class="user">${p.user}</div>
+        </div>
+        <div>${p.content}</div>
+      `;
       feedDiv.appendChild(div);
     });
   }
