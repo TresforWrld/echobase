@@ -9,8 +9,12 @@
   body {
     margin: 0;
     font-family: system-ui, sans-serif;
-    background: #0d0d14;
+    background-color: #0d0d14;
     color: white;
+    /* Subtle background pattern like WhatsApp */
+    background-image: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+    background-repeat: repeat;
+    background-size: auto;
   }
 
   /* Header */
@@ -84,7 +88,7 @@
   textarea {
     width: 100%;
     height: 80px;
-    background: #1a1a2a;
+    background: rgba(26,26,42,0.9); /* Slightly transparent for background pattern */
     color: white;
     border: none;
     border-radius: 8px;
@@ -104,7 +108,7 @@
   }
 
   .post {
-    background: #151525;
+    background: rgba(21,21,37,0.9); /* Slight transparency to show pattern */
     padding: 12px;
     border-radius: 8px;
     margin-top: 12px;
@@ -227,7 +231,7 @@
   <p><strong>Name:</strong> Tresfor Wrld</p>
   <p><strong>Brands:</strong> ANICADE, Tru3Echo, ECHOBASE, SkillRise Africa</p>
   <p><strong>What I do:</strong> Web & App Development, Creative Projects, Content Creation</p>
-  <p><strong>Project Info:</strong> ECHOBASE is a social web for sharing posts, building community, a platforms to meet new Creators and build yourself, 𝚜𝚝𝚊𝚢 𝚌𝚘𝚗𝚗𝚎𝚌𝚝𝚎𝚍 𝚏𝚘𝚛 𝚖𝚘𝚛𝚎</p>
+  <p><strong>Project Info:</strong> ECHOBASE is a social web for sharing posts, building community, connecting with creators, and staying engaged.</p>
   <button onclick="closeDeveloperInfo()">Close</button>
 </div>
 
@@ -235,7 +239,7 @@
 <div id="termsModal" class="modal">
   <h2>ECHOBASE</h2>
   <h3>Terms of Use</h3>
-  <p>By using ECHOBASE, you agree to follow the community rules and respect other users rights, views and freedoms. Posts are stored locally or via Firebase. The developer is not responsible for content shared by users. Use at your own risk.</p>
+  <p>By using ECHOBASE, you agree to follow community rules and respect others. Posts are stored locally or via Firebase. The developer is not responsible for content shared by users. Use at your own risk.</p>
   <button onclick="closeTerms()">Close</button>
 </div>
 
