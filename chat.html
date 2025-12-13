@@ -13,6 +13,7 @@ body {
   background-color: #0d0d14;
   color: white;
 
+  /* Hex background */
   background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9Ijg4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXR0ZXJuIGlkPSJoZXgiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBvbHlnb24gcG9pbnRzPSIyMCwwIDQwLDEwIDQwLDI1IDIwLDM1IDAsMjUgMCwxMCIgc3Ryb2tlPSIjMjIyMjQ0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEuMiIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2hleCkiLz48L3N2Zz4=');
   background-repeat: repeat;
   background-size: 70px 60px;
@@ -28,8 +29,13 @@ header {
 }
 
 header h1 {
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 2px;
+}
+
+#statusText {
+  font-size: 12px;
+  color: #aaa;
 }
 
 header button {
@@ -63,7 +69,7 @@ header button {
 }
 
 .user {
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.8;
   margin-bottom: 4px;
 }
@@ -114,6 +120,7 @@ header button {
 
 <header>
   <h1>ECHOBASE • CHAT</h1>
+  <div id="statusText">● Connecting...</div>
   <button onclick="goBack()">← Feed</button>
 </header>
 
@@ -124,6 +131,10 @@ header button {
   <button id="sendBtn" onclick="sendMessage()">➤</button>
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
 /* ===== USER ===== */
 let username = localStorage.getItem("echobase_username");
@@ -132,7 +143,8 @@ if (!username) {
   localStorage.setItem("echobase_username", username);
 }
 
-/* ===== FIREBASE ===== */
+/* ===== FIREBASE CONFIG ===== */
+/* 🔥 REPLACE WITH YOUR OWN FIREBASE DETAILS */
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -143,11 +155,13 @@ const firebaseConfig = {
   appId: "APP_ID"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const chatRef = db.ref("echobase_chat");
 
-/* ===== SEND MESSAGE ===== */
+/* ===== CHAT ===== */
+const chatRef = db.ref("echobase_chat");
+const chatBox = document.getElementById("chatBox");
+
 function sendMessage() {
   const input = document.getElementById("messageInput");
   const text = input.value.trim();
@@ -162,31 +176,56 @@ function sendMessage() {
   input.value = "";
 }
 
-/* ===== RECEIVE ===== */
 chatRef.limitToLast(100).on("child_added", snap => {
   const msg = snap.val();
-  const box = document.getElementById("chatBox");
 
   const div = document.createElement("div");
   div.className = "message" + (msg.user === username ? " me" : "");
-
   div.innerHTML = `
     <div class="user">${msg.user}</div>
     <div>${msg.text}</div>
   `;
 
-  box.appendChild(div);
+  chatBox.appendChild(div);
   window.scrollTo(0, document.body.scrollHeight);
 });
 
-/* ===== NAV (FIXED) ===== */
+/* ===== ONLINE STATUS ===== */
+const statusText = document.getElementById("statusText");
+const presenceRef = db.ref("presence/" + username);
+const connectedRef = db.ref(".info/connected");
+
+connectedRef.on("value", snap => {
+  if (snap.val() === true) {
+    presenceRef.onDisconnect().set({
+      online: false,
+      lastSeen: Date.now()
+    });
+
+    presenceRef.set({
+      online: true,
+      lastSeen: Date.now()
+    });
+  }
+});
+
+presenceRef.on("value", snap => {
+  if (!snap.exists()) return;
+
+  if (snap.val().online) {
+    statusText.innerHTML = "🟢 Online";
+    statusText.style.color = "#4cff6a";
+  } else {
+    statusText.innerHTML = "⚪ Offline";
+    statusText.style.color = "#aaa";
+  }
+});
+
+/* ===== NAV ===== */
 function goBack() {
-  window.location.href = "/echobase/index.html";
+  window.location.href = "index.html";
 }
 </script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 </body>
 </html>
