@@ -261,9 +261,13 @@
 </footer>
 
 <script>
+  document.addEventListener("DOMContentLoaded", () => {
   // Load username and PFP
-  let username = localStorage.getItem("echobase_username") || prompt("Choose a username for ECHOBASE:") || "Guest";
-  localStorage.setItem("echobase_username", username);
+  let username = localStorage.getItem("echobase_username");
+  if (!username) {
+    username = prompt("Choose a username for ECHOBASE:") || "Guest";
+    localStorage.setItem("echobase_username", username);
+  }
 
   const userPFPImg = document.getElementById("userPFP");
   const usernameDisplay = document.getElementById("usernameDisplay");
@@ -271,50 +275,59 @@
   const modalUsername = document.getElementById("modalUsername");
   const dashboardMenu = document.getElementById("dashboardMenu");
 
-  function updatePFP(src){
-    userPFPImg.src = src;
-    modalPFP.src = src;
-    localStorage.setItem("echobase_pfp", src);
-    renderFeed();
-  }
-
-  const pfp = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
-  updatePFP(pfp);
+  // Set username display
   usernameDisplay.innerText = username;
 
-  // Click PFP to open profile
-  userPFPImg.addEventListener("click", e => { e.stopPropagation(); viewProfile(); });
+  // Load PFP
+  const pfp = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
+  userPFPImg.src = pfp;
+  modalPFP.src = pfp;
 
-  // Click username to toggle dashboard menu
+  // PFP click opens profile
+  userPFPImg.addEventListener("click", e => {
+    e.stopPropagation();
+    modalUsername.innerText = username;
+    document.getElementById("profileModal").style.display = "block";
+    dashboardMenu.style.display = "none"; // close dashboard if open
+  });
+
+  // Username click toggles dashboard
   usernameDisplay.addEventListener("click", e => {
     e.stopPropagation();
     dashboardMenu.style.display = dashboardMenu.style.display === "block" ? "none" : "block";
   });
 
-  // Close dashboard if clicked outside
+  // Click outside dashboard closes it
   window.addEventListener("click", () => dashboardMenu.style.display = "none");
   dashboardMenu.addEventListener("click", e => e.stopPropagation());
 
-  function closeDashboard(){ dashboardMenu.style.display = "none"; }
-  function viewProfile(){ modalUsername.innerText = username; document.getElementById("profileModal").style.display="block"; closeDashboard(); }
-  function closeProfile(){ document.getElementById("profileModal").style.display="none"; }
-
-  function changePFP(){
+  // Change PFP
+  window.changePFP = function() {
     const fileInput = document.createElement("input");
-    fileInput.type="file"; fileInput.accept="image/*"; fileInput.click();
+    fileInput.type="file";
+    fileInput.accept="image/*";
+    fileInput.click();
     fileInput.onchange = () => {
       const file = fileInput.files[0];
       if(!file) return;
       const reader = new FileReader();
-      reader.onload = ()=>updatePFP(reader.result);
+      reader.onload = ()=> {
+        userPFPImg.src = reader.result;
+        modalPFP.src = reader.result;
+        localStorage.setItem("echobase_pfp", reader.result);
+        renderFeed();
+      };
       reader.readAsDataURL(file);
     };
-    closeDashboard();
+    dashboardMenu.style.display = "none";
   }
+
+  // Profile modal close
+  window.closeProfile = function() { document.getElementById("profileModal").style.display = "none"; }
 
   // Feed
   let feed = JSON.parse(localStorage.getItem("echobase_feed")) || [];
-  function postEcho(){
+  window.postEcho = function(){
     const text = document.getElementById("echoInput").value.trim();
     if(!text) return;
     feed.unshift({ user: username, content: text });
@@ -342,6 +355,8 @@
   }
 
   renderFeed();
+});
+
 
   // Developer & Terms modals
   function openDeveloperInfo(){ document.getElementById("developerModal").style.display="block"; }
