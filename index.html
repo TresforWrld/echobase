@@ -25,11 +25,16 @@
       z-index: 100;
     }
 
-    /* Left: PFP + username */
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    /* App name on left */
+    .appName {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+
+    /* Dashboard (PFP) on right */
+    .dashboard {
+      position: relative;
       cursor: pointer;
     }
 
@@ -39,19 +44,30 @@
       border-radius: 50%;
     }
 
-    #usernameDisplay {
-      font-size: 16px;
-      font-weight: bold;
-      color: #8f8fff;
+    /* Dashboard menu */
+    #dashboardMenu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 50px;
+      background: #1a1a2a;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      z-index: 200;
     }
 
-    /* Center: App name */
-    .appName {
-      font-size: 20px;
-      font-weight: bold;
+    #dashboardMenu button {
+      display: block;
+      width: 100%;
+      margin-bottom: 6px;
+      padding: 8px;
+      background: #6a5cff;
+      border: none;
+      border-radius: 6px;
       color: white;
-      text-align: center;
-      flex-grow: 1;
+      font-size: 14px;
+      cursor: pointer;
     }
 
     /* Container & Posts */
@@ -70,7 +86,7 @@
       resize: none;
     }
 
-    button {
+    button.postBtn {
       width: 100%;
       margin-top: 10px;
       padding: 12px;
@@ -92,99 +108,84 @@
       font-weight: bold;
       color: #8f8fff;
     }
-
-    /* Profile modal */
-    #profileModal {
-      display: none;
-      position: fixed;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a2a;
-      border-radius: 8px;
-      padding: 16px;
-      z-index: 200;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-    #profileModal img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      display: block;
-      margin-bottom: 8px;
-    }
-    #profileModal button {
-      margin-top: 10px;
-    }
   </style>
 </head>
-
 <body>
 
 <header>
-  <!-- Left: Profile -->
-  <div class="profile" id="profileBtn">
-    <img id="userPFP" src="" alt="PFP">
-    <div id="usernameDisplay"></div>
-  </div>
-
-  <!-- Center: App Name -->
+  <!-- Left: App Name -->
   <div class="appName">ECHOBASE</div>
+
+  <!-- Right: User Dashboard -->
+  <div class="dashboard" id="dashboardBtn">
+    <img id="userPFP" src="" alt="PFP">
+    <div id="dashboardMenu">
+      <button onclick="viewProfile()">View Profile</button>
+      <button onclick="changePFP()">Change Profile Photo</button>
+      <button onclick="closeDashboard()">Close</button>
+    </div>
+  </div>
 </header>
 
 <!-- Profile Modal -->
-<div id="profileModal">
-  <img id="modalPFP" src="" alt="PFP">
+<div id="profileModal" style="display:none; padding:16px; text-align:center;">
+  <img id="modalPFP" src="" alt="PFP" style="width:80px;height:80px;border-radius:50%;margin-bottom:8px;">
   <div id="modalUsername"></div>
-  <button onclick="changePFP()">Change Profile Photo</button>
   <button onclick="closeProfile()">Close</button>
 </div>
 
 <div class="container">
   <textarea id="echoInput" placeholder="What’s your echo?"></textarea>
-  <button onclick="postEcho()">Echo</button>
+  <button class="postBtn" onclick="postEcho()">Echo</button>
   <div id="feed"></div>
 </div>
 
 <script>
-  // Load username and profile photo
+  // Load username and PFP
   let username = localStorage.getItem("echobase_username");
   let pfp = localStorage.getItem("echobase_pfp");
 
-  if (!username) {
+  if(!username){
     username = prompt("Choose a username for ECHOBASE:") || "Guest";
     localStorage.setItem("echobase_username", username);
   }
 
-  document.getElementById("usernameDisplay").innerText = "@" + username;
-
   const userPFPImg = document.getElementById("userPFP");
   const modalPFP = document.getElementById("modalPFP");
   const modalUsername = document.getElementById("modalUsername");
+  const dashboardMenu = document.getElementById("dashboardMenu");
 
   function updatePFP(src){
     userPFPImg.src = src;
     modalPFP.src = src;
     localStorage.setItem("echobase_pfp", src);
+    renderFeed();
   }
 
-  if (pfp) {
+  if(pfp){
     updatePFP(pfp);
   } else {
     updatePFP("https://via.placeholder.com/40");
   }
 
-  // Profile modal
-  const profileBtn = document.getElementById("profileBtn");
-  const profileModal = document.getElementById("profileModal");
-
-  profileBtn.addEventListener("click", () => {
-    modalUsername.innerText = username;
-    profileModal.style.display = "block";
+  // Dashboard toggle
+  const dashboardBtn = document.getElementById("dashboardBtn");
+  dashboardBtn.addEventListener("click", () => {
+    dashboardMenu.style.display = dashboardMenu.style.display === "block" ? "none" : "block";
   });
 
+  function closeDashboard(){
+    dashboardMenu.style.display = "none";
+  }
+
+  function viewProfile(){
+    modalUsername.innerText = username;
+    document.getElementById("profileModal").style.display = "block";
+    closeDashboard();
+  }
+
   function closeProfile(){
-    profileModal.style.display = "none";
+    document.getElementById("profileModal").style.display = "none";
   }
 
   function changePFP(){
@@ -200,39 +201,32 @@
       reader.onload = () => updatePFP(reader.result);
       reader.readAsDataURL(file);
     }
+    closeDashboard();
   }
 
-  // Load feed
+  // Feed
   let feed = JSON.parse(localStorage.getItem("echobase_feed")) || [];
 
-  function postEcho() {
+  function postEcho(){
     const text = document.getElementById("echoInput").value.trim();
-    if (!text) return;
-
-    const post = {
-      user: username,
-      content: text
-    };
-
+    if(!text) return;
+    const post = { user: username, content: text };
     feed.unshift(post);
     localStorage.setItem("echobase_feed", JSON.stringify(feed));
     document.getElementById("echoInput").value = "";
     renderFeed();
   }
 
-  function renderFeed() {
+  function renderFeed(){
     const feedDiv = document.getElementById("feed");
     feedDiv.innerHTML = "";
-
     feed.forEach(p => {
       const div = document.createElement("div");
       div.className = "post";
-
       let postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
-
       div.innerHTML = `
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-          <img src="${postPFP}" alt="PFP" style="width:30px; height:30px; border-radius:50%;">
+          <img src="${postPFP}" alt="PFP" style="width:30px;height:30px;border-radius:50%;">
           <div class="user">${p.user}</div>
         </div>
         <div>${p.content}</div>
