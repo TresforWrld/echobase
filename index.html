@@ -4,21 +4,17 @@
 <meta charset="UTF-8">
 <title>ECHOBASE</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
   body {
     margin: 0;
     font-family: system-ui, sans-serif;
     background-color: #0d0d14;
     color: white;
-
-    /* Hexagonal pattern background */
     background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9Ijg4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXR0ZXJuIGlkPSJoZXgiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBvbHlnb24gcG9pbnRzPSIyMCwwIDQwLDEwIDQwLDI1IDIwLDM1IDAsMjUgMCwxMCIgc3Ryb2tlPSIjMjI0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjEuNSIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2hleCkiLz48L3N2Zz4=');
     background-repeat: repeat;
     background-size: 60px 52px;
   }
 
-  /* Header */
   header {
     display: flex;
     justify-content: space-between;
@@ -30,11 +26,7 @@
     z-index: 100;
   }
 
-  .appName {
-    font-size: 22px;
-    font-weight: bold;
-    letter-spacing: 2px;
-  }
+  .appName { font-size: 22px; font-weight: bold; letter-spacing: 2px; }
 
   .userArea {
     display: flex;
@@ -43,18 +35,13 @@
     position: relative;
   }
 
-  #userPFP {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  #userPFP, #usernameDisplay {
     cursor: pointer;
   }
 
-  #usernameDisplay {
-    font-weight: bold;
-    color: #8f8fff;
-    cursor: pointer;
-  }
+  #userPFP { width: 40px; height: 40px; border-radius: 50%; }
+
+  #usernameDisplay { font-weight: bold; color: #8f8fff; }
 
   #dashboardMenu {
     display: none;
@@ -79,129 +66,35 @@
     border-radius: 6px;
     color: white;
     font-size: 14px;
-    cursor: pointer;
   }
 
-  /* Container */
-  .container {
-    padding: 16px;
-    padding-bottom: 80px;
-  }
+  .container { padding: 16px; padding-bottom: 80px; }
+  textarea { width: 99%; height: 80px; background: rgba(26,26,42,0.85); color: white; border: none; border-radius: 8px; padding: 10px; resize: none; }
+  button.postBtn { width: 100%; margin-top: 10px; padding: 12px; background: #6a5cff; border: none; border-radius: 8px; color: white; font-size: 16px; }
+  .post { background: rgba(21,21,37,0.85); padding: 12px; border-radius: 8px; margin-top: 12px; }
+  .user { font-weight: bold; color: #8f8fff; }
 
-  textarea {
-    width: 99%;
-    height: 80px;
-    background: rgba(26,26,42,0.85);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px;
-    resize: none;
-  }
-
-  button.postBtn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 12px;
-    background: #6a5cff;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 16px;
-  }
-
-  .post {
-    background: rgba(21,21,37,0.85);
-    padding: 12px;
-    border-radius: 8px;
-    margin-top: 12px;
-  }
-
-  .user {
-    font-weight: bold;
-    color: #8f8fff;
-  }
-
-  /* Profile Modal */
-  #profileModal {
-    display: none;
-    position: fixed;
-    top: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(26,26,42,0.95);
-    border-radius: 8px;
-    padding: 16px;
-    z-index: 200;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  }
-  #profileModal img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: block;
-    margin-bottom: 8px;
-  }
-  #profileModal button {
-    margin-top: 10px;
-    width: 100%;
-    padding: 8px;
-    background: #6a5cff;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-  }
-
-  /* Footer */
-  footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #12121c;
-    color: #888;
-    text-align: center;
-    padding: 12px 16px;
-    font-size: 12px;
-  }
-  footer a {
-    color: #6a5cff;
-    text-decoration: none;
-    margin: 0 5px;
-    cursor: pointer;
-  }
-
-  /* Developer & Terms Modal */
-  .modal {
-    display:none; 
-    position:fixed; 
-    top:50px; 
-    left:50%; 
+  #profileModal, .modal {
+    display:none;
+    position:fixed;
+    top:50px;
+    left:50%;
     transform:translateX(-50%);
     background: rgba(26,26,42,0.95);
-    border-radius:8px; 
-    padding:16px; 
-    z-index:200; 
-    width:90%; 
-    max-width:400px; 
-    box-shadow:0 0 15px rgba(0,0,0,0.5); 
-    color:white; 
-    font-family:system-ui, sans-serif;
-  }
-  .modal h2 {
+    border-radius:8px;
+    padding:16px;
+    z-index:200;
+    width:90%;
+    max-width:400px;
+    box-shadow:0 0 15px rgba(0,0,0,0.5);
     text-align:center;
   }
-  .modal button {
-    margin-top:10px; 
-    width:100%; 
-    padding:8px; 
-    background:#6a5cff; 
-    border:none; 
-    border-radius:6px; 
-    color:white; 
-    cursor:pointer;
-  }
+
+  #profileModal img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 8px; }
+  #profileModal button, .modal button { margin-top: 10px; width:100%; padding:8px; background:#6a5cff; border:none; border-radius:6px; color:white; }
+
+  footer { position: fixed; bottom: 0; width: 100%; background: #12121c; color: #888; text-align: center; padding: 12px 16px; font-size: 12px; }
+  footer a { color: #6a5cff; text-decoration: none; margin: 0 5px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -219,29 +112,26 @@
   </div>
 </header>
 
-<!-- Profile Modal -->
 <div id="profileModal">
   <img id="modalPFP" src="" alt="PFP">
   <div id="modalUsername"></div>
   <button onclick="closeProfile()">Close</button>
 </div>
 
-<!-- Developer Info Modal -->
 <div id="developerModal" class="modal">
   <h2>ECHOBASE</h2>
   <h3>Developer Info</h3>
   <p><strong>Name:</strong> Tresfor Wrld</p>
   <p><strong>Brands:</strong> ANICADE, Tru3Echo, ECHOBASE, SkillRise Africa</p>
   <p><strong>What I do:</strong> Web & App Development, Creative Projects, Content Creation</p>
-  <p><strong>Project Info:</strong> ECHOBASE is a social web, part of ANICADE's ELEVATE program, mainly for sharing posts, building community, connecting with creators, and staying engaged.</p>
+  <p><strong>Project Info:</strong> ECHOBASE is a social web, part of ANICADE's ELEVATE program.</p>
   <button onclick="closeDeveloperInfo()">Close</button>
 </div>
 
-<!-- Terms Modal -->
 <div id="termsModal" class="modal">
   <h2>ECHOBASE</h2>
   <h3>Terms of Use</h3>
-  <p>By using ECHOBASE, you agree to follow community rules and respect others. Posts are stored locally or via Firebase. The developer is not responsible for content shared by users. Use at your own risk.</p>
+  <p>By using ECHOBASE, you agree to follow community rules and respect others. Posts are stored locally or via Firebase. Use at your own risk.</p>
   <button onclick="closeTerms()">Close</button>
 </div>
 
@@ -261,13 +151,9 @@
 </footer>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  // Load username and PFP
-  let username = localStorage.getItem("echobase_username");
-  if (!username) {
-    username = prompt("Choose a username for ECHOBASE:") || "Guest";
-    localStorage.setItem("echobase_username", username);
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  let username = localStorage.getItem("echobase_username") || prompt("Choose a username:") || "Guest";
+  localStorage.setItem("echobase_username", username);
 
   const userPFPImg = document.getElementById("userPFP");
   const usernameDisplay = document.getElementById("usernameDisplay");
@@ -275,20 +161,17 @@
   const modalUsername = document.getElementById("modalUsername");
   const dashboardMenu = document.getElementById("dashboardMenu");
 
-  // Set username display
   usernameDisplay.innerText = username;
 
-  // Load PFP
   const pfp = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
-  userPFPImg.src = pfp;
-  modalPFP.src = pfp;
+  userPFPImg.src = modalPFP.src = pfp;
 
   // PFP click opens profile
   userPFPImg.addEventListener("click", e => {
     e.stopPropagation();
     modalUsername.innerText = username;
     document.getElementById("profileModal").style.display = "block";
-    dashboardMenu.style.display = "none"; // close dashboard if open
+    dashboardMenu.style.display = "none";
   });
 
   // Username click toggles dashboard
@@ -297,51 +180,53 @@
     dashboardMenu.style.display = dashboardMenu.style.display === "block" ? "none" : "block";
   });
 
-  // Click outside dashboard closes it
+  // Close dashboard on outside click
   window.addEventListener("click", () => dashboardMenu.style.display = "none");
   dashboardMenu.addEventListener("click", e => e.stopPropagation());
 
-  // Change PFP
-  window.changePFP = function() {
-    const fileInput = document.createElement("input");
-    fileInput.type="file";
-    fileInput.accept="image/*";
-    fileInput.click();
-    fileInput.onchange = () => {
-      const file = fileInput.files[0];
+  // Functions exposed to global
+  window.closeDashboard = () => dashboardMenu.style.display = "none";
+  window.viewProfile = () => {
+    modalUsername.innerText = username;
+    document.getElementById("profileModal").style.display = "block";
+    dashboardMenu.style.display = "none";
+  }
+  window.closeProfile = () => document.getElementById("profileModal").style.display = "none";
+
+  window.changePFP = () => {
+    const input = document.createElement("input");
+    input.type = "file"; input.accept = "image/*"; input.click();
+    input.onchange = () => {
+      const file = input.files[0];
       if(!file) return;
       const reader = new FileReader();
-      reader.onload = ()=> {
-        userPFPImg.src = reader.result;
-        modalPFP.src = reader.result;
+      reader.onload = () => {
+        userPFPImg.src = modalPFP.src = reader.result;
         localStorage.setItem("echobase_pfp", reader.result);
         renderFeed();
       };
       reader.readAsDataURL(file);
     };
-    dashboardMenu.style.display = "none";
+    closeDashboard();
   }
-
-  // Profile modal close
-  window.closeProfile = function() { document.getElementById("profileModal").style.display = "none"; }
 
   // Feed
   let feed = JSON.parse(localStorage.getItem("echobase_feed")) || [];
-  window.postEcho = function(){
+  window.postEcho = () => {
     const text = document.getElementById("echoInput").value.trim();
     if(!text) return;
-    feed.unshift({ user: username, content: text });
+    feed.unshift({user: username, content: text});
     localStorage.setItem("echobase_feed", JSON.stringify(feed));
     document.getElementById("echoInput").value="";
     renderFeed();
   }
 
-  function renderFeed(){
+  function renderFeed() {
     const feedDiv = document.getElementById("feed");
-    feedDiv.innerHTML="";
+    feedDiv.innerHTML = "";
     feed.forEach(p => {
-      const div=document.createElement("div");
-      div.className="post";
+      const div = document.createElement("div");
+      div.className = "post";
       const postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
       div.innerHTML = `
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
@@ -357,13 +242,11 @@
   renderFeed();
 });
 
-
-  // Developer & Terms modals
-  function openDeveloperInfo(){ document.getElementById("developerModal").style.display="block"; }
-  function closeDeveloperInfo(){ document.getElementById("developerModal").style.display="none"; }
-  function openTerms(){ document.getElementById("termsModal").style.display="block"; }
-  function closeTerms(){ document.getElementById("termsModal").style.display="none"; }
-
+// Developer & Terms modals
+function openDeveloperInfo(){ document.getElementById("developerModal").style.display="block"; }
+function closeDeveloperInfo(){ document.getElementById("developerModal").style.display="none"; }
+function openTerms(){ document.getElementById("termsModal").style.display="block"; }
+function closeTerms(){ document.getElementById("termsModal").style.display="none"; }
 </script>
 </body>
 </html>
