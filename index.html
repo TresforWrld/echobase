@@ -101,13 +101,26 @@
 
 <header>
   <div class="appName">ECHOBASE</div>
-  <div class="userArea">
-    <img id="userPFP" src="" alt="PFP">
-    <div id="usernameDisplay"></div>
-    <div id="dashboardMenu">
-      <button onclick="viewProfile()">View Profile</button>
-      <button onclick="changePFP()">Change Profile Photo</button>
-      <button onclick="closeDashboard()">Close</button>
+
+  <div style="display:flex; gap:14px; align-items:center;">
+    <button onclick="goToChat()" style="
+      background:none;
+      border:none;
+      color:#6a5cff;
+      font-size:14px;
+      cursor:pointer;
+    ">
+      💬 Chat
+    </button>
+
+    <div class="userArea">
+      <img id="userPFP" src="" alt="PFP">
+      <div id="usernameDisplay"></div>
+      <div id="dashboardMenu">
+        <button onclick="viewProfile()">View Profile</button>
+        <button onclick="changePFP()">Change Profile Photo</button>
+        <button onclick="closeDashboard()">Close</button>
+      </div>
     </div>
   </div>
 </header>
