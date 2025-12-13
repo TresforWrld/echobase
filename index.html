@@ -192,7 +192,7 @@
 </div>
 
 <footer>
-  ©2025 ANICADE ⛩️ productions (ANICADE ELEVATE) | 
+  ©2025 ANICADE ⛩️ productions (ANICADE`s ELEVATE) | 
 
   <a href="#">Developer Info</a> | 
   <a href="#">Contact</a> | 
@@ -228,51 +228,23 @@
   }
 
   // Dashboard toggle
-  const dashboardBtn = document.getElementById("dashboardBtn");
-  dashboardBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // prevent clicks from closing immediately
+dashboardBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent window click from closing
     dashboardMenu.style.display = dashboardMenu.style.display === "block" ? "none" : "block";
-  });
+});
 
-  // Close dashboard when clicking outside
-  window.addEventListener("click", () => {
-    dashboardMenu.style.display = "none";
-  });
-
-  function closeDashboard(){
-    dashboardMenu.style.display = "none";
-  }
-
-  function viewProfile(){
-    modalUsername.innerText = username;
-    document.getElementById("profileModal").style.display = "block";
-    closeDashboard();
-  }
-
-  function closeProfile(){
-    document.getElementById("profileModal").style.display = "none";
-  }
-
-  function changePFP(){
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.onchange = () => {
-      const file = fileInput.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => updatePFP(reader.result);
-      reader.readAsDataURL(file);
+// Close dashboard when clicking outside
+window.addEventListener("click", (e) => {
+    if(!dashboardBtn.contains(e.target)){
+        dashboardMenu.style.display = "none";
     }
-    closeDashboard();
-  }
+});
 
-  // Feed
-  let feed = JSON.parse(localStorage.getItem("echobase_feed")) || [];
+// Prevent dashboard menu clicks from closing itself
+dashboardMenu.addEventListener("click", (e) => e.stopPropagation());
 
-  function postEcho(){
+// Echo button works normally
+function postEcho(){
     const text = document.getElementById("echoInput").value.trim();
     if(!text) return;
     const post = { user: username, content: text };
@@ -280,27 +252,7 @@
     localStorage.setItem("echobase_feed", JSON.stringify(feed));
     document.getElementById("echoInput").value = "";
     renderFeed();
-  }
-
-  function renderFeed(){
-    const feedDiv = document.getElementById("feed");
-    feedDiv.innerHTML = "";
-    feed.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "post";
-      let postPFP = localStorage.getItem("echobase_pfp") || "https://via.placeholder.com/40";
-      div.innerHTML = `
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-          <img src="${postPFP}" alt="PFP" style="width:30px;height:30px;border-radius:50%;">
-          <div class="user">${p.user}</div>
-        </div>
-        <div>${p.content}</div>
-      `;
-      feedDiv.appendChild(div);
-    });
-  }
-
-  renderFeed();
+}
 </script>
 
 </body>
